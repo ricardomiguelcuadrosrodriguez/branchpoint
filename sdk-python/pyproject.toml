@@ -1,0 +1,82 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "branchpoint"
+version = "0.0.1"
+description = "Time-travel debugger for AI agents. Branch from any step, change anything, replay."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Ricardo Cuadros" }]
+keywords = [
+    "ai", "agents", "llm", "debugger", "observability",
+    "anthropic", "openai", "tracing", "self-hosted",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Debuggers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "pydantic>=2.9.0",
+    "dill>=0.3.9",
+    "ulid-py>=1.1.0",
+    "rich>=13.9.0",      # for CLI output
+    "click>=8.1.0",      # CLI framework
+    "httpx>=0.27.0",     # for the dashboard server
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.40.0"]
+openai = ["openai>=1.55.0"]
+server = [
+    "fastapi[standard]>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "sqlalchemy>=2.0.36",
+    "aiosqlite>=0.20.0",
+]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.7.0",
+    "mypy>=1.13.0",
+]
+all = [
+    "branchpoint[anthropic,openai,server,dev]",
+]
+
+[project.scripts]
+branchpoint = "branchpoint.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/ricardomiguelcuadrosrodriguez/branchpoint"
+Repository = "https://github.com/ricardomiguelcuadrosrodriguez/branchpoint"
+Issues = "https://github.com/ricardomiguelcuadrosrodriguez/branchpoint/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/branchpoint"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "RUF"]
+ignore = ["E501"]  # handled by formatter
+
+[tool.mypy]
+strict = true
+python_version = "3.10"

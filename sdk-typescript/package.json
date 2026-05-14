@@ -1,0 +1,57 @@
+{
+  "name": "@branchpoint/sdk",
+  "version": "0.0.1",
+  "description": "Time-travel debugger for AI agents. Branch from any step, change anything, replay.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check src",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "ai", "agents", "llm", "debugger", "observability",
+    "anthropic", "openai", "tracing", "self-hosted"
+  ],
+  "author": "Ricardo Cuadros",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@anthropic-ai/sdk": ">=0.30.0",
+    "openai": ">=4.70.0"
+  },
+  "peerDependenciesMeta": {
+    "@anthropic-ai/sdk": { "optional": true },
+    "openai": { "optional": true }
+  },
+  "dependencies": {
+    "superjson": "^2.2.1",
+    "ulid": "^2.3.0"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@biomejs/biome": "^1.9.0",
+    "@types/node": "^22.10.0",
+    "openai": "^4.74.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ricardomiguelcuadrosrodriguez/branchpoint.git",
+    "directory": "sdk-typescript"
+  }
+}
