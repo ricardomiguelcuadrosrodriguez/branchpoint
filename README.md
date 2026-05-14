@@ -214,7 +214,7 @@ Be honest about what doesn't work yet:
 
 ## 📜 License
 
-MIT © Ricardo Cuadros and contributors.
+MIT © Ricardo Miguel Cuadros Rodriguez and contributors.
 
 ## 🙏 Acknowledgments
 

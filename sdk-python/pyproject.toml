@@ -9,7 +9,7 @@ description = "Time-travel debugger for AI agents. Branch from any step, change 
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
-authors = [{ name = "Ricardo Cuadros" }]
+authors = [{ name = "Ricardo Miguel Cuadros Rodriguez" }]
 keywords = [
     "ai", "agents", "llm", "debugger", "observability",
     "anthropic", "openai", "tracing", "self-hosted",

@@ -24,7 +24,7 @@
     "ai", "agents", "llm", "debugger", "observability",
     "anthropic", "openai", "tracing", "self-hosted"
   ],
-  "author": "Ricardo Cuadros",
+  "author": "Ricardo Miguel Cuadros Rodriguez",
   "license": "MIT",
   "engines": {
     "node": ">=20"
