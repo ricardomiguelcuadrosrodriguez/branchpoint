@@ -1,0 +1,84 @@
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Test / type-check caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+
+# ---------------------------------------------------------------------------
+# Node / TypeScript
+# ---------------------------------------------------------------------------
+node_modules/
+*.tsbuildinfo
+.next/
+out/
+.turbo/
+.npm/
+.yarn/
+.pnp.*
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vite/
+
+# ---------------------------------------------------------------------------
+# IDEs / editors
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------------------------------------------
+# Secrets / local config
+# ---------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+.secrets/
+
+# ---------------------------------------------------------------------------
+# Branchpoint runtime data
+# ---------------------------------------------------------------------------
+# User's recorded sessions should never be committed.
+.branchpoint/
+~/.branchpoint/
+
+# Local databases (server uses SQLite in Session 5+)
+*.db
+*.sqlite
+*.sqlite3
