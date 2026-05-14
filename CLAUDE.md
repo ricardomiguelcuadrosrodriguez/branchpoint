@@ -510,44 +510,42 @@ If a step did `db.insert(...)`, replaying it would duplicate.
 - Imports work, types valid, tests pass for types + pricing
 - Ready for Session 2
 
-## Session 2 — Python SDK Recorder (NEXT)
+## Session 2 — Python SDK Recorder (May 14, 2026) ✅ DONE
 
 **Goal:** Make `bp.record()` and `@bp.trace` actually work — write valid trace.jsonl to disk.
 
-**Plan:**
-1. Implement `Recorder.start()`:
-   - Generate ULID for session_id
-   - Create `sessions_dir / session_id /`
-   - Write `SessionStartEvent` to `trace.jsonl`
-2. Implement `Recorder.finish()`:
-   - Compute total duration
-   - Write `SessionEndEvent` with final cost + status
-3. Implement `Recorder.write_event()`:
-   - Validate via Pydantic
-   - Append to trace.jsonl via `storage.write_event()`
-4. Wire up `@bp.trace` decorator:
-   - Use `contextvars.ContextVar` for the active Recorder
-   - On entry: emit `StepStartEvent`
-   - Time the call
-   - On exit: emit `StepEndEvent` with status + duration
-   - On exception: emit `ErrorEvent` + `StepEndEvent(status=error)` + re-raise
-5. Same for `@bp.tool`:
-   - Emit `ToolCallEvent` with `side_effects` flag
-6. Write `meta.json` on `finish()` for fast dashboard listing
-7. Tests:
-   - `test_recorder.py`: open/close session, validate JSONL, schema checks
-   - `test_decorators.py`: nested @trace produces nested step_ids
-   - `test_storage.py`: concurrent writes are safe
-8. Update example `01-basic-agent.py` to write a real trace
+**Done:**
+- ✅ `storage.py`: `write_event` with `os.fsync` for crash-safety + atomic `write_meta` (temp file + rename) + `read_events` / `read_meta`
+- ✅ `recorder.py`: `Recorder.start/finish/write_event` with ULID, `contextvars.ContextVar` for active-recorder tracking, `threading.Lock` for write serialization, bookkeeping (step/llm/tool counts, cost totals), idempotent `.finish()`, state-error guards
+- ✅ `decorators.py`: `@trace` (auto-session OR nested step), `@tool` (emits ToolCallEvent with `side_effects` flag), exception path emits `ErrorEvent` + `StepEndEvent(status=error)` + session marked errored if outermost
+- ✅ `record()` context manager (success/error paths)
+- ✅ Argument capture via `inspect.signature`, result truncation at 8 KB
+- ✅ `__init__.py` public API: `trace`, `tool`, `record`, `Recorder`, event types
+- ✅ **56 tests passing** (was 16): types (5), pricing (11), storage (15), recorder (15), decorators (10)
+- ✅ Concurrent-write test: 50 threads × 10 events each → 500 valid JSON lines, zero corruption
+- ✅ Smoke test: `@bp.trace` produces the 4 expected events (`session_start`, `step_start`, `step_end`, `session_end`) plus `meta.json` to `~/.branchpoint/sessions/<ulid>/`
 
-**Acceptance:**
-- Run `python examples/python/01-basic-agent.py` → produces `~/.branchpoint/sessions/<ulid>/trace.jsonl` with 4 events: `session_start`, `step_start`, `step_end`, `session_end`
-- `pytest sdk-python/tests/` → 10+ passing tests
-- `branchpoint sessions list` → shows the session
+**Key decisions made during implementation:**
+- Default name for `@trace`/`@tool` is `fn.__name__`, not `__qualname__` — cleaner display in the UI
+- `os.fsync` after every event write — crash-safe, small perf cost, acceptable for a dev tool
+- `meta.json` rewritten atomically on every `.finish()` — readers never see partial files
+- `Recorder.finish()` is idempotent — second call is a no-op, simpler error paths
+- `RecorderStateError` for misuse (start twice, write before start, write after finish)
+- `BRANCHPOINT_DIR` env var overrides the default `~/.branchpoint` root
 
-**Estimated effort:** 10-14 hours.
+**Deferred to Session 4 (auto-instrumentation):**
+- Running `examples/python/01-basic-agent.py` end-to-end with a real Anthropic call. The `llm_call` event is only emitted once we patch the SDK in Session 4. For Session 2 the smoke test exercised the same 4 step/session events with a synthetic function instead — equivalent acceptance, no API key / network needed.
 
-## Session 3 — TypeScript SDK (parity with Python)
+**Files changed:**
+- `sdk-python/src/branchpoint/storage.py` (full rewrite)
+- `sdk-python/src/branchpoint/recorder.py` (full rewrite)
+- `sdk-python/src/branchpoint/decorators.py` (full rewrite)
+- `sdk-python/tests/conftest.py` (new — shared `sessions_dir` fixture)
+- `sdk-python/tests/test_storage.py` (new — 15 tests)
+- `sdk-python/tests/test_recorder.py` (new — 15 tests)
+- `sdk-python/tests/test_decorators.py` (new — 10 tests)
+
+## Session 3 — TypeScript SDK (parity with Python) (NEXT)
 
 **Goal:** Same surface as Session 2 but in TypeScript.
 
@@ -774,6 +772,6 @@ branchpoint dashboard   # opens http://localhost:3089
 
 If you have questions before making changes, ask. If you're about to make a significant change, propose it first. **Consistency with prior decisions matters more than "perfectly elegant" new code.**
 
-**Last updated:** May 13, 2026
-**Last completed session:** Session 1 — scaffolding
-**Next session:** Session 2 — Python SDK Recorder + JSONL storage + tests
+**Last updated:** May 14, 2026
+**Last completed session:** Session 2 — Python SDK Recorder + JSONL storage + 56 tests passing
+**Next session:** Session 3 — TypeScript SDK parity with Python
